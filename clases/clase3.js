@@ -49,12 +49,12 @@ const objetos =  [
 
 const lista = [];
 
-objetos.forEach(element =>{
-    Object.keys(element).forEach(i => {
-        lista.push(i)
+// objetos.forEach(element =>{
+//     Object.keys(element).forEach(i => {
+//         lista.push(i)
 
-        lista.includes(i)? lista:
-    })
-});
+//         lista.includes(i)? lista:
+//     })
+// });
 
 console.log(lista);
