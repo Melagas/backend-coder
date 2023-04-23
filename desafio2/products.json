@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "title": "Mouse",
+    "description": "Logitech inalambrico",
+    "price": 1800,
+    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRE3zj-jX_nugf0rmRyjifKu8_Df-eQIS5MHw&usqp=CAU",
+    "code": "log170",
+    "stock": 10
+  },
+  {
+    "id": 2,
+    "title": "Teclado",
+    "description": "Hyperx 65",
+    "price": 6000,
+    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNo0SaVKm6MmWMhFNTadswND_CVoWadZi73g&usqp=CAU",
+    "code": "hyp130",
+    "stock": 5
+  },
+  {
+    "id": 3,
+    "title": "Celular",
+    "description": "Motorola g6",
+    "price": 3000,
+    "thumbnail": "https://s3.amazonaws.com/arc-wordpress-client-uploads/infobae-wp/wp-content/uploads/2018/07/19093602/Moto-G6-Plus-1920-1.jpg",
+    "code": "mot620",
+    "stock": 2
+  }
+]
