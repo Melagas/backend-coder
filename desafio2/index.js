@@ -1,7 +1,7 @@
 const fs = require("fs");
 
 class ProductManager {
-  constructor(id=0) {
+  constructor(id = 0) {
     this.products = [];
     const productString = fs.readFileSync("products.json", "utf-8");
     const products = JSON.parse(productString);
@@ -14,47 +14,52 @@ class ProductManager {
     if (searchCode) {
       return "This code already exists";
     }
-    if (!product.title || !product.description || !product.price || !product.thumbnail || !product.code || !product.stock){
+    if (
+      !product.title ||
+      !product.description ||
+      !product.price ||
+      !product.thumbnail ||
+      !product.code ||
+      !product.stock
+    ) {
       return "Fields missing";
     }
-    this.products.push({
-      id: this.id += 1,
-      ...product
-    })
+    const arrayId = this.products.map((product) => product.id);
+    const maxId = arrayId.length === 0 ? 0 : Math.max(...arrayId);
+    const id = maxId + 1;
+    const newProduct = { id, ...product };
+    this.products.push(newProduct);
     const productString = JSON.stringify(this.products, null, 2);
     fs.writeFileSync("products.json", productString);
-    return "Product added";
+    return newProduct;
   }
 
-  getProductById(number){ 
-      const numberFound = this.products.find(product=>product.id === number)
-      if (numberFound){
-        const productString = JSON.stringify(this.products, null, 2);
-        fs.writeFileSync("products.json", productString);
-        return numberFound
-      }else {
-          return null
-      }
-    }
-
-  updateProduct(id,product){
-    const foundProduct = this.products.find((product) => product.id === id);
-    if (foundProduct){
-      const filteredProducts = this.products.filter((product) => product.id !== id);
-      const newProduct = { id, ...product };
-      this.products = [...filteredProducts, newProduct];
+  getProductById(number) {
+    const numberFound = this.products.find((product) => product.id === number);
+    if (numberFound) {
       const productString = JSON.stringify(this.products, null, 2);
       fs.writeFileSync("products.json", productString);
-      return newProduct;
-        } else {
-          return null;
-        }
-      }
+      return numberFound;
+    } else {
+      return null;
+    }
+  }
 
-  deleteProduct(id){
-    this.products = this.products.filter(product => product.id !== id);
+  updateProduct(id, newStock) {
+    const productIndex = this.products.findIndex(
+      (product) => product.id === id
+    );
+    if (productIndex !== -1) {
+      this.products[productIndex].stock = newStock;
+      const productString = JSON.stringify(this.products, null, 2);
+      fs.writeFileSync("products.json", productString);
+    }
+  }
+
+  deleteProduct(id) {
+    this.products = this.products.filter((product) => product.id !== id);
     fs.writeFileSync("products.json", JSON.stringify(this.products, null, 2));
-}
+  }
 
   getProduct() {
     return this.products;
@@ -93,12 +98,11 @@ const product3 = {
   stock: 2,
 };
 
-
 productsManager.addProduct(product1);
 productsManager.addProduct(product2);
 productsManager.addProduct(product3);
 //console.log(productsManager.getProduct());
 //console.log(productsManager.getProductById(1));
-console.log(productsManager.updateProduct(5,1));
+//productsManager.updateProduct(2, 50);
 //productsManager.deleteProduct(2);
 //console.log(productsManager.getProduct());
