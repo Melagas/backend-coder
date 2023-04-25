@@ -103,6 +103,6 @@ productsManager.addProduct(product2);
 productsManager.addProduct(product3);
 //console.log(productsManager.getProduct());
 //console.log(productsManager.getProductById(1));
-//productsManager.updateProduct(2, 50);
+//productsManager.updateProduct(3, 50);
 //productsManager.deleteProduct(2);
 //console.log(productsManager.getProduct());
