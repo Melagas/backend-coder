@@ -13,22 +13,20 @@ app.listen(PORT,()=>{
 });
 
 app.get("/products", (req,res)=>{
+  const limit = req.query.limit;
   const products = container.getProduct();
-  res.json(products)
+  if (limit) { 
+    res.json(products.slice(0,limit));
+  }else{
+    res.json(products);
+  }
 });
-
-app.get("/products?limit=5", (req,res)=>{
-  const products = container.getProduct();
-  const firstFive = products.slice(0,5);
-  res.json(firstFive);
-});
-
 
 app.get("/:id", (req,res)=>{
   const id = res.params.id;
   const products = container.find(p=>p.id===id)
   //const products = container.getProductById(id);
-  res.send(products); 
+  res.send(products)
 });
 
 
