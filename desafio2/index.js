@@ -46,11 +46,11 @@ class ProductManager {
   }
 
   updateProduct(id, newStock) {
-    const productIndex = this.products.findIndex(
+    const productId = this.products.findIndex(
       (product) => product.id === id
     );
-    if (productIndex !== -1) {
-      this.products[productIndex].stock = newStock;
+    if (productId !== -1) {
+      this.products[productId].stock = newStock;
       const productString = JSON.stringify(this.products, null, 2);
       fs.writeFileSync("products.json", productString);
     }
@@ -103,6 +103,6 @@ productsManager.addProduct(product2);
 productsManager.addProduct(product3);
 //console.log(productsManager.getProduct());
 //console.log(productsManager.getProductById(1));
-//productsManager.updateProduct(3, 50);
+productsManager.updateProduct(3, 50);
 //productsManager.deleteProduct(2);
 //console.log(productsManager.getProduct());
