@@ -1,6 +1,6 @@
 const express = require("express");
 const ProductManager = require("./Products");
-const container = new ProductManager('./products.json');
+const container = new ProductManager("./products.json");
 
 const app = express();
 const PORT = 8080;
@@ -22,11 +22,14 @@ app.get("/products", (req,res)=>{
   }
 });
 
-app.get("/:id", (req,res)=>{
-  const id = res.params.id;
-  const products = container.find(p=>p.id===id)
-  //const products = container.getProductById(id);
-  res.send(products)
+app.get("/products/:id", (req,res)=>{
+  const id = req.params.id;
+  const product = container.getProductById(parseInt(id));
+  if(product){
+    res.json(product);
+  }else{
+    res.json({error:"Product not found"});
+  }
 });
 
 

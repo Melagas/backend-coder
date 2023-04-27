@@ -34,8 +34,8 @@ class ProductManager {
       return newProduct;
     }
   
-    getProductById(number) {
-      const numberFound = this.products.find((product) => product.id === number);
+    getProductById(id) {
+      const numberFound = this.products.find((product) => product.id === id);
       if (numberFound) {
         const productString = JSON.stringify(this.products, null, 2);
         fs.writeFileSync("products.json", productString);
