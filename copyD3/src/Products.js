@@ -69,7 +69,6 @@ class ProductManager {
   const productsManager = new ProductManager();
 
   const product1 = {
-    "id": 1,
     "title": "Bandeja Corazón",
     "description": "con pajarito",
     "price": 3800,
@@ -78,7 +77,6 @@ class ProductManager {
     "stock": 10
   }
   const product2 = {
-    "id": 2,
     "title": "Mate",
     "description": "Hojas verdes",
     "price": 2000,
@@ -87,7 +85,6 @@ class ProductManager {
     "stock": 5
   }
   const product3 = {
-    "id": 3,
     "title": "Azucarera",
     "description": "con mariposas",
     "price": 3400,
@@ -96,7 +93,6 @@ class ProductManager {
     "stock": 2
   }
   const product4 = {
-    "id": 4,
     "title": "Provoletera",
     "description": "marron y lisa",
     "price": 2800,
@@ -105,7 +101,6 @@ class ProductManager {
     "stock": 2
   }
   const product5 = {
-    "id": 5,
     "title": "Juego de yerba y azucar",
     "description": "con flores",
     "price": 5400,
@@ -114,7 +109,6 @@ class ProductManager {
     "stock": 8
   }
   const product6 = {
-    "id": 6,
     "title": "Bandeja ovalada",
     "description": "con pajarito",
     "price": 2900,
@@ -123,7 +117,6 @@ class ProductManager {
     "stock": 2
   }
   const product7 = {
-    "id": 7,
     "title": "Porta saumerio",
     "description": "flores azules",
     "price": 3000,
@@ -132,7 +125,6 @@ class ProductManager {
     "stock": 6
   }
   const product8 = {
-    "id": 8,
     "title": "Juego de tazas",
     "description": "Crema y café",
     "price": 8000,
@@ -141,7 +133,6 @@ class ProductManager {
     "stock": 2
   }
   const product9 = {
-    "id": 9,
     "title": "Ensaladera",
     "description": "picaflor",
     "price": 6000,
@@ -150,7 +141,6 @@ class ProductManager {
     "stock": 4
   }
   const product10 = {
-    "id": 10,
     "title": "Taza",
     "description": "Gris",
     "price": 3100,
