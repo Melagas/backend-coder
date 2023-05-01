@@ -39,7 +39,7 @@ class ProductManager {
       const newProduct = { id: arrayId, ...product };
       data.push(newProduct);
       const productString = JSON.stringify(data, null, 2);
-      await fs.promises.writeFile("products.json", productString);
+      await fs.promises.writeFile(this.path, productString);
       return newProduct;
     } catch (error) {
       throw new Error(error.message);
@@ -66,7 +66,7 @@ class ProductManager {
       if (position !== -1) {
         data[position] = { ...data[position], ...newData };
         const productString = JSON.stringify(data, null, 2);
-        await fs.promises.writeFile("products.json", productString);
+        await fs.promises.writeFile(this.path, productString);
         return 'Product update';
       }
     } catch (error) {
@@ -78,7 +78,7 @@ class ProductManager {
     try {
       let data = await this.getProduct();
       data = data.filter((product) => product.id !== id);
-      await fs.promises.writeFile("products.json",JSON.stringify(data, null, 2));
+      await fs.promises.writeFile(this.path,JSON.stringify(data, null, 2));
     } catch (error) {
       throw new Error(error.message);
     }
