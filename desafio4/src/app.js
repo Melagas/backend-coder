@@ -1,9 +1,11 @@
 const express = require("express");
-//const __dirname = require("./utils");
 const handlebars = require("express-handlebars")
 const productRouter = require("./routes/productsRouter");
 const cartRouter= require("./routes/cartsRouter");
-const viewsRouter = require("./routes/viewsRouter");
+const realtimeprodsRouter = require("./routes/realtimeprodsRouter");
+const ProductManager = require("./manager/productManager");
+const container = new ProductManager("products")
+
 const {Server} = require("socket.io");
 
 const app = express();
@@ -22,14 +24,50 @@ app.set("view engine","handlebars")
 app.use(express.static(__dirname + '/public'))
 app.use("/api/products", productRouter);
 app.use("/api/carts", cartRouter);
-app.use("/api/realtimeproducts", viewsRouter);
+app.use("/api/realtimeproducts", realtimeprodsRouter);
 
-socketServer.on("connection",socket=>{
-  console.log("cliente conectado");
-  socket.on("message",data=>{
-    console.log(data);
-  })
-})
+socketServer.on("connection", (socket) => {
+  console.log(`New Client Connection with ID: ${socket.id}`);
+
+  socket.on("new-product", async (newProd) => {
+    try {
+      await container.addProduct({ ...newProd });
+      // Actualizando lista despues de agregar producto nuevo
+      const productsList = await container.getProducts();
+
+      socketServer.emit("products", productsList);
+    } catch (error) {
+      console.log(error);
+    }
+  });
+
+  socket.on("new-product", async (prod) => {
+    try {
+      await container.addProduct({ ...prod });
+      // Actualizando lista despues de agregar producto nuevo
+      const productsList = await container.getProducts();
+      console.log(productsList);
+      socketServer.emit("products", productsList);
+    } catch (error) {
+      console.log(error);
+    }
+  });
+
+  socket.on("delete-product", async (delProd) => {
+    try {
+      let pid = parseInt(delProd)
+      // console.log(id)
+      // console.log(typeof id)
+      await container.deleteProduct(pid);
+      // Actualizando lista despues de agregar producto nuevo
+      const productsList = await container.getProducts();
+
+      socketServer.emit("products", productsList);
+    } catch (error) {
+      console.log(error);
+    }
+  });
+});
 
 app.get("*"),
   (req, res) => {

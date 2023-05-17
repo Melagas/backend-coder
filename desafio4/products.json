@@ -1,14 +1,5 @@
 [
   {
-    "pid": 1,
-    "title": "Bandeja Corazón",
-    "description": "con pajarito rojo",
-    "price": 3800,
-    "thumbnail": "https://melagas.github.io/avrceramica/img/bandeja-corazon-pajarito.JPG",
-    "code": "ban170",
-    "stock": 10
-  },
-  {
     "pid": 2,
     "title": "Mate",
     "description": "Hojas verdes",

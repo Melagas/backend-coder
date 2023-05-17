@@ -3,6 +3,7 @@ const fs = require ('fs');
 class ProductManager {
   constructor() {
     this.path = "./products.json";
+    this.products = [...productsList]
   }
 
   async getProduct() {
@@ -85,6 +86,32 @@ class ProductManager {
       throw new Error(error.message);
     }
   }
+
+  async getProducts(){
+    await this.getProduct()
+    return this.products
+  }
 }
+
+const productsList = [
+  {
+    pid: 1,
+    title: "Bandeja Corazón",
+    description: "con pajarito rojo",
+    price: 3800,
+    thumbnail: "https://melagas.github.io/avrceramica/img/bandeja-corazon-pajarito.JPG",
+    code: "ban170",
+    stock: 10
+  },
+  {
+    pid: 2,
+    title: "Mate",
+    description: "Hojas verdes",
+    price: 2000,
+    thumbnail: "https://melagas.github.io/avrceramica/img/mate-flores.jpg",
+    code: "mat130",
+    stock: 5
+  },
+]
 
 module.exports = ProductManager;
