@@ -1,79 +1,45 @@
 const express = require("express");
-const handlebars = require("express-handlebars")
+const {Server: HttpServer} = require("http");
+const {Server: SocketServer} = require("socket.io");
+
 const productRouter = require("./routes/productsRouter");
 const cartRouter= require("./routes/cartsRouter");
+const homeRouter = require("./routes/homeRouter")
 const realtimeprodsRouter = require("./routes/realtimeprodsRouter");
-const ProductManager = require("./manager/productManager");
-const container = new ProductManager("products")
 
-const {Server} = require("socket.io");
+const handlebars = require("express-handlebars")
+const path = require("path");
+const socket = require("./socket");
 
-const app = express();
 const PORT = 8080;
-const httpServer = app.listen(PORT, () => {
-  console.log(`Listening on port: http://localhost:${PORT}`);
-});
+const app = express();
+const httpServer = new HttpServer(app);
+const io = new SocketServer(httpServer);
 
-const socketServer = new Server(httpServer);
+const serverConnected = httpServer.listen(PORT, () =>
+  console.log(`📢 Server listening on port: ${PORT}`)
+);
+
+serverConnected.on("error", (error) => console.log(`Server error: ${error}`));
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use("/public",express.static(__dirname + '/public'));
+
+
 app.engine("handlebars", handlebars.engine());
-app.set("views", __dirname+"/views");
 app.set("view engine","handlebars")
-app.use(express.static(__dirname + '/public'))
-app.use("/api/products", productRouter);
-app.use("/api/carts", cartRouter);
-app.use("/api/realtimeproducts", realtimeprodsRouter);
+app.set("views", path.join(__dirname,"views"));
 
-socketServer.on("connection", (socket) => {
-  console.log(`New Client Connection with ID: ${socket.id}`);
 
-  socket.on("new-product", async (newProd) => {
-    try {
-      await container.addProduct({ ...newProd });
-      // Actualizando lista despues de agregar producto nuevo
-      const productsList = await container.getProducts();
+app.use("/api/", productRouter);
+app.use("/api/", cartRouter);
+app.use("/", homeRouter);
+app.use("/realtimeproducts", realtimeprodsRouter);
 
-      socketServer.emit("products", productsList);
-    } catch (error) {
-      console.log(error);
-    }
-  });
+socket(io);
 
-  socket.on("new-product", async (prod) => {
-    try {
-      await container.addProduct({ ...prod });
-      // Actualizando lista despues de agregar producto nuevo
-      const productsList = await container.getProducts();
-      console.log(productsList);
-      socketServer.emit("products", productsList);
-    } catch (error) {
-      console.log(error);
-    }
-  });
-
-  socket.on("delete-product", async (delProd) => {
-    try {
-      let pid = parseInt(delProd)
-      // console.log(id)
-      // console.log(typeof id)
-      await container.deleteProduct(pid);
-      // Actualizando lista despues de agregar producto nuevo
-      const productsList = await container.getProducts();
-
-      socketServer.emit("products", productsList);
-    } catch (error) {
-      console.log(error);
-    }
-  });
-});
-
-app.get("*"),
-  (req, res) => {
-    return res.status(404).json({
-      status: "error",
-      msg: "the route is not implemented",
-      data: {},
-    });
-  };
+app.get("*", (req, res) =>
+  res.status(404).send("<h3> ⛔ We cannot access the requested route</h3>")
+);

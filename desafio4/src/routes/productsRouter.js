@@ -18,10 +18,10 @@ productRouter.get("/", async (req, res) => {
   }
 });
 
-productRouter.get("/:pid", async (req, res) => {
+productRouter.get("/:id", async (req, res) => {
   try {
-    const { pid } = req.params;
-    const product = await container.getProductById(parseInt(pid));
+    const { id } = req.params;
+    const product = await container.getProductById(parseInt(id));
     if (!product) {
       return res.status(404).json({ error: "Product not found" });
     }
@@ -41,21 +41,21 @@ productRouter.post("/", async (req, res) => {
   }
 });
 
-productRouter.put("/:pid", async (req, res) => {
+productRouter.put("/:id", async (req, res) => {
   try {
-    const { pid } = req.params;
+    const { id } = req.params;
     const obj = req.body;
-    const newProduct = await container.updateProduct(parseInt(pid),obj);
+    const newProduct = await container.updateProduct(parseInt(id),obj);
     res.send({status: "succes", payload: newProduct});
   } catch (error) {
     res.status(500).json({ message: "There was a mistake" });
   }
 });
 
-productRouter.delete("/:pid", (req, res) => {
+productRouter.delete("/:id", (req, res) => {
   try {
-    const pid = req.params.pid;
-    const product = container.deleteProduct(parseInt(pid));
+    const id = req.params.id;
+    const product = container.deleteProduct(parseInt(id));
     res.send({status: "succes", payload: product});
   } catch (error) {
     res.status(500).json({ message: "There was a mistake" });

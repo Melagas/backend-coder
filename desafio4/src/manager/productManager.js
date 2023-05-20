@@ -1,117 +1,190 @@
-const fs = require ('fs');
+const fs = require("fs");
 
 class ProductManager {
-  constructor() {
-    this.path = "./products.json";
-    this.products = [...productsList]
+  constructor(fileName) {
+    this.path = `./${fileName}.json`;
+    this.products = [...productList];
   }
 
-  async getProduct() {
-    try {
-      if (fs.existsSync(this.path)) {
-        const data = await fs.promises.readFile(this.path, "utf-8");
-        return JSON.parse(data); //para poder recuperar la data y recupera sus propiedades
-      }
-      await fs.promises.writeFile(this.path, JSON.stringify([]));
-      return [];
-    } catch (error) {
-      throw new Error(error.message);
-    }
+  async getData() {
+    fs.existsSync(this.path)
+      ? (this.products = JSON.parse(
+          await fs.promises.readFile(this.path, "utf-8")
+        ))
+      : await fs.promises.writeFile(this.path, JSON.stringify(this.products));
+
+    return this.products;
   }
 
   async addProduct(product) {
-    try {
-      let data = await this.getProduct();
-      const searchCode = data.find((p) => p.code === product.code);
-      if (searchCode) {
-        return "This code already exists";
-      }
-      if (
-        !product.title ||
-        !product.description ||
-        !product.price ||
-        !product.thumbnail ||
-        !product.code ||
-        !product.stock ||
-        !product.status
-      ) {
-        return "Fields missing";
-      }
-      const arrayId = data.length > 0 ? data[data.length - 1].pid + 1 : 1;
-      const newProduct = { pid: arrayId, ...product };
-      data.push(newProduct);
-      const productString = JSON.stringify(data, null, 2);
-      await fs.promises.writeFile(this.path, productString);
-      return newProduct;
-    } catch (error) {
-      throw new Error(error.message);
+    await this.getData();
+
+    if (
+      !product.title ||
+      !product.description ||
+      !product.price ||
+      !product.thumbnails ||
+      !product.code ||
+      !product.stock
+    ) {
+      return "The content of the fields is wrong.";
     }
+
+    if (this.products.some((item) => item.code === product.code)) {
+      return "Product already exists.";
+    }
+
+    const maxId =
+      this.products.length > 0
+        ? Math.max(...this.products.map((p) => p.id))
+        : 0;
+    this.id = maxId + 1;
+
+    let newProduct = { id: this.id, ...product, status: true };
+    this.products.push(newProduct);
+
+    await fs.promises.writeFile(
+      this.path,
+      JSON.stringify(this.products, null, 2)
+    );
+
+    return "Product added successfully.";
   }
 
-  async getProductById(pid) {
-    try {
-      let data = await this.getProduct();
-      const productFound = data.find((product) => product.pid === pid);
-      if (!productFound) {
-        return null;
-      }
-      return productFound;
-    } catch (error) {
-      throw new Error(error.message);
-    }
+  async getProducts() {
+    await this.getData();
+    return this.products;
   }
 
-  async updateProduct(pid, newData) {
-    try {
-      let data = await this.getProduct();
-      const position = data.findIndex((product) => product.pid === pid);
-      if (position !== -1) {
-        data[position] = { ...data[position], ...newData };
-        const productString = JSON.stringify(data, null, 2);
-        await fs.promises.writeFile(this.path, productString);
-      }
-      return newData;
-    } catch (error) {
-      throw new Error(error.message);
+  async getProductById(id) {
+    await this.getData();
+    let prodFound = this.products.find((p) => p.id === id);
+    if (!prodFound) {
+      return "Product not found.";
     }
+    return prodFound;
   }
 
-  async deleteProduct(pid) {
-    try {
-      let data = await this.getProduct();
-      data = data.filter((product) => product.pid !== pid);
-      await fs.promises.writeFile(this.path,JSON.stringify(data, null, 2));
-      return "deleted product"
-    } catch (error) {
-      throw new Error(error.message);
+  async updateProduct(id, updatedProduct) {
+    await this.getData();
+    let prodIndex = this.products.findIndex((p) => p.id === id);
+
+    if (prodIndex === -1) {
+      return "Product not found.";
     }
+
+    this.products[prodIndex] = {
+      ...this.products[prodIndex],
+      ...updatedProduct,
+    };
+
+    await fs.promises.writeFile(
+      this.path,
+      JSON.stringify(this.products, null, 2)
+    );
+
+    return "Product updated successfully.";
   }
 
-  async getProducts(){
-    await this.getProduct()
-    return this.products
+  async deleteProduct(id) {
+    await this.getData();
+    const prodIndex = this.products.findIndex((p) => p.id === id);
+
+    if (prodIndex === -1) {
+      return "Product not found.";
+    }
+
+    this.products.splice(prodIndex, 1);
+    await fs.promises.writeFile(
+      this.path,
+      JSON.stringify(this.products, null, 2)
+    );
+
+    return "Product deleted successfully.";
   }
 }
 
-const productsList = [
+const productList = [
   {
-    pid: 1,
     title: "Bandeja Corazón",
     description: "con pajarito rojo",
     price: 3800,
-    thumbnail: "https://melagas.github.io/avrceramica/img/bandeja-corazon-pajarito.JPG",
+    thumbnails: "https://melagas.github.io/avrceramica/img/bandeja-corazon-pajarito.JPG",
     code: "ban170",
     stock: 10
   },
   {
-    pid: 2,
     title: "Mate",
     description: "Hojas verdes",
     price: 2000,
-    thumbnail: "https://melagas.github.io/avrceramica/img/mate-flores.jpg",
+    thumbnails: "https://melagas.github.io/avrceramica/img/mate-flores.jpg",
     code: "mat130",
     stock: 5
   },
+  {
+    title: "Azucarera",
+    description: "con mariposas",
+    price: 3400,
+    thumbnails: "https://melagas.github.io/avrceramica/img/azucarera-mariposas.jpg",
+    code: "azu620",
+    stock: 2
+  },
+  {
+    title: "Provoletera",
+    description: "marron y lisa",
+    price: 2800,
+    thumbnails: "https://melagas.github.io/avrceramica/img/provoletera.jpg",
+    code: "pov620",
+    stock: 2
+  },
+  {
+    title: "Juego de yerba y azucar",
+    description: "con flores",
+    price: 5400,
+    thumbnails: "https://melagas.github.io/avrceramica/img/azucareras-flores.jpg",
+    code: "jue940",
+    stock: 8
+  },
+  {
+    title: "Bandeja ovalada",
+    description: "con pajarito",
+    price: 2900,
+    thumbnails: "https://melagas.github.io/avrceramica/img/bandeja-pajarito.jpg",
+    code: "ban230",
+    stock: 2
+  },
+  {
+    title: "Porta saumerio",
+    description: "flores azules",
+    price: 3000,
+    thumbnails: "https://melagas.github.io/avrceramica/img/saumerio.jpg",
+    code: "sau510",
+    stock: 6
+  },
+  {
+    title: "Juego de tazas",
+    description: "Crema y café",
+    price: 8000,
+    thumbnails: "https://melagas.github.io/avrceramica/img/tazas-fores.jpg",
+    code: "taz110",
+    stock: 2
+  },
+  {
+    title: "Ensaladera",
+    description: "picaflor",
+    price: 6000,
+    thumbnails: "https://melagas.github.io/avrceramica/img/foto-pagina-principal.jpg",
+    code: "ens123",
+    stock: 4
+  },
+  {
+    title: "Taza",
+    description: "Gris",
+    price: 3100,
+    thumbnails: "https://melagas.github.io/avrceramica/img/taza-naranja.jpg",
+    code: "taz901",
+    stock: 12
+  }
 ]
 
 module.exports = ProductManager;
