@@ -43,3 +43,9 @@ formProducts.onsubmit = (e) => {
 deleteProduct = (productId) => {
   socket.emit("delete-product", productId);
 };
+
+verifyCode = (productCode) => {
+  socket.emit("verify-code", productCode);
+};
+
+
